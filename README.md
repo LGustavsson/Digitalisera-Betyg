@@ -1,4 +1,4 @@
-# Digitalisers Betyg
+# Digitalisera Betyg
 Skapa arkiv med tillhörande metadatafil av digitaliserade betygsdokument.
 ![Image](https://github.com/user-attachments/assets/5c9c62e8-457e-4aea-bb9c-660a29d37f7c)
 
