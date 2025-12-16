@@ -1,5 +1,6 @@
 # Digitalisers Betyg
 Skapa arkiv med tillhörande metadatafil av digitaliserade betygsdokument.
+![Image](https://github.com/user-attachments/assets/5c9c62e8-457e-4aea-bb9c-660a29d37f7c)
 
 # Beskrivning
 Detta programstöd har framarbetats i huvudsakligt syfte att kunna erbjuda arbetstränande ett jobb att genomföra via er lokala arbetsmarknadsenhet.
