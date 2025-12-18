@@ -10,6 +10,8 @@ Programmet har därmed inte som huvudsaklig användare arkivpersonal eller andra
 För de arkivorganisationer som inte har behov av detta programstöd som riktar sig till de som behöver extra hjälp, 
 så kan jag tipsa om Andrew Tutt-Wixners framtagna programstöd "DigiBetyg" som kan häntas här: [DigiBetyg](https://archivetools.itch.io/digiarchive).
 
+Programmet fungerar så att ett antal betyg skannas in till en pdf-fil. Betygen måste vara ensidiga då programmet inte kan hantera att enskilda betygsdokument är flersidiga. Programmet hämtar den skannade filen, slår ut sidorna till en sida per betyg och elev. Den information som matas in sparas i en metadatafil tillsammans med den enskilda betygsdokumentet. 
+
 # Förberedelser
 1. Ladda ner den senaste releasen av Digitalisera-Betyg.
 2. Packa upp zip-filen på den dator som ska hantera och använda applikationen.
@@ -17,12 +19,12 @@ så kan jag tipsa om Andrew Tutt-Wixners framtagna programstöd "DigiBetyg" som 
 
 # Hur programmet används
 1. Starta Digitalisera-Betyg med "DigitaliseraBetyg.exe".
-2. Skanna så många betyg som ni känner att ni vill hantera på samma gång. Dock inte så att sidantalet i den skannade filen överstiger sedan tidigare överenskomna maxantalet. 
-3. Hämta pdf-fil med inskannade betyg via "Hämta betygsfil".
-4. Programmet kommer försöka hämta information från betygen och placera dessa i rätt fält. Var vaksam ifall informationen som hämtats är korrekt eller ej. 
-5. Fyll i samtliga fält med rätt uppgifter. 
-6. Den hämtade pdf-filen kan visas i webbläsaren via "Visa betygsfil".
-7. När samtliga fällt är ifyllda, kontrollera att de är korrekta, därefter välj "Digitalisera betyg".
+2. Skanna så många betyg som ni känner att ni vill hantera på samma gång. Dock inte så att sidantalet i det enskilda betyget är fler än en, samt att den skannade filen inte överstiger sedan tidigare överenskomna maxantalet sidor. 
+4. Hämta pdf-fil med inskannade betyg via "Hämta betygsfil".
+5. Programmet kommer försöka hämta information från betygen och placera dessa i rätt fält. Var vaksam ifall informationen som hämtats är korrekt eller ej. 
+6. Fyll i samtliga fält med rätt uppgifter. 
+7. Den hämtade pdf-filen kan visas i webbläsaren via "Visa betygsfil".
+8. När samtliga fällt är ifyllda, kontrollera att de är korrekta, därefter välj "Digitalisera betyg".
 
 
 # Credits
