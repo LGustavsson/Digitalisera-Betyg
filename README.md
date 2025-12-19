@@ -2,7 +2,7 @@
 Skapa arkiv med tillhörande metadatafil av digitaliserade betygsdokument.
 
 Programmet kan hanera valfritt samtida ensidiga betyg upp till en vafri maxgräns
-<img width="1082" height="587" alt="image" src="https://github.com/user-attachments/assets/e0d4b8e3-17d8-490f-9032-59b80568cb3d" />
+<img width="1081" height="700" alt="image" src="https://github.com/user-attachments/assets/eabfe738-778a-45ae-beb5-80101168e9fb" />
 
 Detta genererar ett arkiv med metadatafil och samtliga hantera betyg
 <img width="592" height="88" alt="image" src="https://github.com/user-attachments/assets/1d7a531b-d7e0-4d7b-91cc-1f219f1adb07" />
