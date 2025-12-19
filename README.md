@@ -1,6 +1,14 @@
 # Digitalisera Betyg
 Skapa arkiv med tillhörande metadatafil av digitaliserade betygsdokument.
-![Image](https://github.com/user-attachments/assets/5c9c62e8-457e-4aea-bb9c-660a29d37f7c)
+
+Programmet kan hanera valfritt samtida ensidiga betyg upp till en vafri maxgräns
+<img width="1082" height="587" alt="image" src="https://github.com/user-attachments/assets/e0d4b8e3-17d8-490f-9032-59b80568cb3d" />
+
+Detta genererar ett arkiv med metadatafil och samtliga hantera betyg
+<img width="592" height="88" alt="image" src="https://github.com/user-attachments/assets/1d7a531b-d7e0-4d7b-91cc-1f219f1adb07" />
+
+Där metadatafilen kan användas för databearbetning, sökning för utlämnande, och som ostrukturerad data vid leverans till e-arkiv. 
+<img width="1305" height="78" alt="image" src="https://github.com/user-attachments/assets/255b224c-6576-49c3-9703-241ff24ab74d" />
 
 # Beskrivning
 Detta programstöd har framarbetats i huvudsakligt syfte att kunna erbjuda arbetstränande ett jobb att genomföra via er lokala arbetsmarknadsenhet.
@@ -26,13 +34,10 @@ Programmet fungerar så att ett antal betyg skannas in till en pdf-fil. Betygen 
 7. Den hämtade pdf-filen kan visas i webbläsaren via "Visa betygsfil".
 8. När samtliga fällt är ifyllda, kontrollera att de är korrekta, därefter välj "Digitalisera betyg".
 
-
 # Credits
 Programmet har framarbetats av Linus Gustavsson, linus.gustavsson.1@gmail.com.
-
 Ikonen är hämtad från - [https://icon-icons.com/icon/archive/125380](https://icon-icons.com/icon/archive/125380)
 
 # Creative Commons License
 ![image](https://github.com/user-attachments/assets/22d24ea9-5ecc-4e4f-be3a-0e51860bfb22)
-
 This work is licensed under a [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).  
