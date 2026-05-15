@@ -1,4 +1,3 @@
 FreeSimpleGui
 pypdf
-send2trash
 auto-py-to-exe
