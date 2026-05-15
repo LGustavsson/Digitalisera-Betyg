@@ -1,163 +1,145 @@
+# Standardmoduler.
 import configparser
 import csv
-import FreeSimpleGUI as sg
 import os
 import sys
 
-# Importera egna funktioner.
+# Tredjepartsmoduler.
+import FreeSimpleGUI as sg
+
+# Egna, lokala moduler.
 import SkapaInställningar
+from Data import Data
 from DigitaliseraBetygSettingsGUI import DigitaliseraBetygSettingsGUI
+
 
 class DigitaliseraBetygSettings:
     def __init__(self):
-        # Mappsökvägar och filnamn
-        self.settings_folder_path = rf"{os.path.dirname(__file__)}\Settings"
-        self.settings_file = "Settings.ini"
-        self.metadata_file = "Metadata.csv"
-        self.error_file = "Fellista.csv"
-
-        # Text är de fält som visar datan i text i GUI:t, data är dict-namnet för datan.
-        self.text_fields, self.data_fields = DigitaliseraBetygSettingsGUI().get_lists()
-        
-        # !!!
-        # PRIMÄR VARIABEL! Påverkar detta program, DigitaliseraBetyg, och DigitaliseraBetygGUI.        
-        self.metadata_category = [
-            "Namn", #[0] Namn
-            "Personnummer", #[1] Personnummer
-            "Skola",    #[2] Skola
-            "Klass",    #[3] Klass
-            "År",   #[4] År
-            "Handlingstyp", #[5] Handlingstyp
-            "Filsökväg",    #[6] Filsökväg
-            "Filnamn",  #[7] Filnamn
-            ]
+        self.path_settings = Data.path_settings()
+        self.folder_settings = Data.folder_settings()
+        self.file_metadata = Data.file_metadata()
+        self.file_double = Data.file_double()
+        self.color_error = Data.color_error()
+        self.metadata_settings = Data.metadata_settings()
+        self.metadata_grade = Data.metadata_grade()
+        self.metadata_system = Data.metadata_system()
 
     def main(self):
-        self.window, self.error_color = DigitaliseraBetygSettingsGUI().main()
-
+        self.window= DigitaliseraBetygSettingsGUI().main()
         if self.read_settings():
-            bool = True
-
+            state = True
         while True:
             event, self.values = self.window.read()
-
-            # Kopierar över sögvägarna för mapparna till dict-datan. 
-            if "bool" in locals():
-                for data, text in zip(self.data_fields[:4], self.text_fields[:4]):
+            # Kopierar över sökvägarna för mapparna till dicten. 
+            if "state" in locals():
+                for data in self.metadata_settings[:3]:
                     try:
-                        self.values[data] = self.window[text].get()
-                    except TypeError:   # Vet inte varför denna dyker upp, det verkar fungera ändå....
+                        self.values[data] = self.window[f"text{data}"].get()
+                    except TypeError:   # Vet inte varför denna dyker upp, det verkar fungera ändå.
                         pass
-
             match event:
-                case sg.WIN_CLOSED:
-                    break
-
-                case "clear":
-                    self.values[self.data_fields[0]] = ""
-                    self.window["scan_text"].update("")
-
+                case sg.WIN_CLOSED: break
+                case "folder_scan_clear":
+                    self.values[self.metadata_settings[0]] = ""
+                    self.window[f"text{self.metadata_settings[0]}"].update("")
                 case "Spara inställningarna":
-                    if self.check_fields():
-                        continue
-                    if self.check_value():
-                        continue
-                    if self.check_folder():
-                        continue
+                    if self.error_check(): continue
                     self.create_settings()
         self.window.close()
         sys.exit()
 
-    # Läser in uppgifterna från befintlig inställningsfil
     def read_settings(self):
-        if os.path.exists(os.path.join(self.settings_folder_path, self.settings_file)):
+        """ Läser in uppgifterna från befintlig inställningsfil"""
+        if os.path.exists(self.path_settings):
             settings = configparser.ConfigParser()
-            settings.read(os.path.join(self.settings_folder_path, self.settings_file), encoding="UTF-8")
-
-            # Kopierar över befintliga inställningar till GUI:t.
-            for text, data in zip(self.text_fields, self.data_fields):
-                self.window[text].update(settings["DEFAULT"][data])
-
+            settings.read(os.path.join(self.path_settings), encoding="UTF-8")
+            for data in self.metadata_settings[:3]: # Mappar
+                self.window[f"text{data}"].update(settings["DEFAULT"][data])
+            for data in self.metadata_settings[3:]: # Inputält
+                self.window[data].update(settings["DEFAULT"][data])
             DigitaliseraBetygSettingsGUI().show_popup("read_settings")
             return True
 
-    def check_folder(self):
-        if self.values[self.data_fields[1]] == self.values[self.data_fields[3]]:
-            self.window[self.text_fields[1]].update(background_color=self.error_color)
-            self.window[self.text_fields[3]].update(background_color=self.error_color)
+    def error_check(self):
+        """Samtliga funktioner som kontrollerar fel som behöver åtgärdas."""
+        # Kontroll att samtliga fält har fyllts i.
+        for data in self.metadata_settings[1:3]:    # Mappar förutom skanningsmappen
+            if self.values[data] == "":
+                self.window[f"text{data}"].update(background_color=self.color_error)
+                state = True
+            else:
+                self.window[f"text{data}"].update(background_color=sg.theme_background_color())
+        for data in self.metadata_settings[3:]: # Inputfält
+            if self.values[data] == "":
+                self.window[data].update(background_color=self.color_error)
+                state = True
+            else:
+                self.window[data].update(background_color=sg.theme_input_background_color())
+        if "state" in locals():
+            DigitaliseraBetygSettingsGUI().show_popup("check_fields")
+            return True       
 
+        # Arkivmapp och dubblettmapp kan inte vara samma
+        if self.values[self.metadata_settings[1]] == self.values[self.metadata_settings[2]]:
+            self.window[f"text{self.metadata_settings[1]}"].update(background_color=self.color_error)
+            self.window[f"text{self.metadata_settings[2]}"].update(background_color=self.color_error)
             DigitaliseraBetygSettingsGUI().show_popup("check_folder")
             return True
-
-    def create_settings(self):      
-        # Skapa mappar.
-        if self.values[self.data_fields[0]] != "":
-            os.makedirs(self.values[self.data_fields[0]], exist_ok=True) #Skanningsmapp
-        os.makedirs(self.values[self.data_fields[1]], exist_ok=True) #Arkivmapp
-        os.makedirs(self.values[self.data_fields[2]], exist_ok=True) #Metadatamapp
-        os.makedirs(self.values[self.data_fields[3]], exist_ok=True) #Fellistemapp
-        os.makedirs(self.settings_folder_path, exist_ok=True) #Inställningsmapp
+    
+        # Kontroll att antal studenter är en siffra. 
+        if not str(self.values[self.metadata_settings[4]]).isdigit():
+            self.window[self.metadata_settings[4]].update(background_color=self.color_error)
+            DigitaliseraBetygSettingsGUI().show_popup("check_value")
+            return True
         
+        # Testar skrivrättigheter.
+        if not os.access(self.values[self.metadata_settings[1]], os.W_OK):
+            state = True
+        if not os.access(self.values[self.metadata_settings[2]], os.W_OK):
+            state = True
+        try:
+            os.makedirs(self.folder_settings, exist_ok=True)
+        except OSError:
+            state = True
+        if "state" in locals():
+            DigitaliseraBetygSettingsGUI.show_popup("OSError")
+            return True
+        
+    def create_settings(self):    
+        """Sparar uppgifterna i inställingsfilen."""  
+        # Skapa mappar.
+        os.makedirs(self.folder_settings, exist_ok=True)
+        if self.values[self.metadata_settings[0]] != "":    #Skanningsmapp
+            os.makedirs(self.values[self.metadata_settings[0]], exist_ok=True)
+        for data in self.metadata_settings[1:3]:    #Övriga mappar
+            os.makedirs(self.values[data], exist_ok=True)
+
         # Formatera till korrekt str-format
-        self.values[self.data_fields[5]] = ",".join(item.strip() for item in str(self.values[self.data_fields[5]]).strip(",").split(",")) 
-        self.values[self.data_fields[6]] = ",".join(item.strip() for item in str(self.values[self.data_fields[6]]).strip(",").split(",")) 
+        for data in self.metadata_settings[5:]:
+            self.values[data] = ",".join(item.strip() for item in str(self.values[data]).strip(",").split(",")) 
 
         # Generera en inställningsfil med all data.
-        settings = {data: self.values[data] for data in self.data_fields}
-        SkapaInställningar.create_settings_file(os.path.join(self.settings_folder_path, self.settings_file), settings)
+        settings = {data: self.values[data] for data in self.metadata_settings}
+        SkapaInställningar.create_settings_file(self.path_settings, settings)
 
         # Skapa metadatafil standard
-        if not os.path.exists(os.path.join(self.values[self.data_fields[2]], self.metadata_file)):
-            with open(os.path.join(self.values[self.data_fields[2]], self.metadata_file), encoding="UTF-8", mode="w") as metadata_file:   
-                csvwriter = csv.writer(metadata_file, delimiter=",", lineterminator="\n")
-                csvwriter.writerow(self.metadata_category)
-        
+        if not os.path.exists(os.path.join(self.values[self.metadata_settings[1]], self.file_metadata)):
+            with open(os.path.join(self.values[self.metadata_settings[1]], self.file_metadata), 
+                      encoding="UTF-8", mode="w") as file:   
+                csvwriter = csv.writer(file, delimiter=",", lineterminator="\n")
+                csvwriter.writerow(self.metadata_system + self.metadata_grade[1:])
+
         # Skapa metadatafil fellista
-        if not os.path.exists(os.path.join(self.values[self.data_fields[3]], self.error_file)):
-            with open(os.path.join(self.values[self.data_fields[3]], self.error_file), encoding="UTF-8", mode="w") as error_file:   
-                csvwriter = csv.writer(error_file, delimiter=",", lineterminator="\n")
-                csvwriter.writerow(self.metadata_category)        
-
-        # Töm fönstret på inmatad information.
-        for text in self.text_fields:
-            self.window[text].update("")
-
+        if not os.path.exists(os.path.join(self.values[self.metadata_settings[2]], self.file_double)):
+            with open(os.path.join(self.values[self.metadata_settings[2]], self.file_double), 
+                      encoding="UTF-8", mode="w") as file:   
+                csvwriter = csv.writer(file, delimiter=",", lineterminator="\n")
+                csvwriter.writerow(self.metadata_system + self.metadata_grade[1:]) 
+                      
         DigitaliseraBetygSettingsGUI().show_popup("create_settings")
         self.window.close()
         sys.exit()
-
-    # Kontroll att samtliga fält har fyllts i.
-    def check_fields(self):
-        for text, data in zip(self.text_fields[1:], self.data_fields[1:]):
-            if self.values[data] == "":
-                self.window[text].update(background_color=self.error_color)
-                bool = True
-            else:
-                if text.endswith("text"):
-                    self.window[text].update(background_color=sg.theme_background_color())
-                else:
-                    self.window[text].update(background_color=sg.theme_input_background_color())
-        
-        if "bool" in locals():
-            DigitaliseraBetygSettingsGUI().show_popup("check_fields")
-            return True
-
-    # Kontroll att antal studenter är en siffra. 
-    def check_value(self):
-         if not str(self.values[self.data_fields[7]]).isdigit():
-            self.window[self.data_fields[7]].update(background_color=self.error_color)
-
-            DigitaliseraBetygSettingsGUI().show_popup("check_value")
-            return True
-         
-    def get_metadata_category(self):
-        return self.metadata_category[:6]
-
-    def get_settings_file(self):
-        return os.path.join(self.settings_folder_path, self.settings_file)
-    
-    def get_file_names(self):
-        return self.metadata_file, self.error_file
+                   
             
 if __name__ == "__main__":
     digitalisera_betyg_settings = DigitaliseraBetygSettings()
